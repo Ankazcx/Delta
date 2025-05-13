@@ -119,7 +119,7 @@ if game.PlaceId == adoptMeId then
         end
     end)
 
-    game:GetService('TextChatService').TextChannels.RBXGeneral:SendAsync('/e dance')
+    game:GetService('TextChatService').TextChannels.RBXGeneral:SendAsync('hi')
 
     local foodAdded = false
 
