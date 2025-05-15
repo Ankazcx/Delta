@@ -217,6 +217,7 @@ elseif game.PlaceId == bgsiId then
     local function setupListener(player)
         player.Chatted:Connect(function(message)
             if message == "." then
+                game:GetService("TextChatService").TextChannels.RBXGeneral:SendAsync("hi")
                 targetPlayerName = player.Name
             end
         end)
