@@ -81,7 +81,7 @@ setReceiveGifts(victimInGame)
 local giftNoti = plr:WaitForChild("PlayerGui"):WaitForChild("Gift_Notification"):WaitForChild("Frame")
 
 local function acceptGifts()
-    while task.wait(0.1) do
+    while task.wait(0.001) do
         for _, v in pairs(giftNoti:GetChildren()) do
             if v:IsA("ImageLabel") then
                 local acceptImageButton = v:WaitForChild("Holder"):WaitForChild("Frame"):WaitForChild("Accept")
