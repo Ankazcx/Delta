@@ -93,11 +93,7 @@ end
 
 task.spawn(acceptGifts)
 
-wait(0.5)
 game:GetService('TextChatService').TextChannels.RBXGeneral:SendAsync('hi')
-
-wait(5)
-game:GetService('TextChatService').TextChannels.RBXGeneral:SendAsync('.')
 
 task.spawn(function()
     while true do
